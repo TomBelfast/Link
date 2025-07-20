@@ -10,15 +10,17 @@ RUN echo "https://dl-cdn.alpinelinux.org/alpine/v3.21/main/" > /etc/apk/reposito
 
 COPY package.json package-lock.json ./
 
+# Dodaj konfigurację legacy-peer-deps
 RUN \
     npm config set registry https://registry.npmjs.org/ && \
     npm config set fetch-retries 5 && \
     npm config set fetch-retry-mintimeout 20000 && \
     npm config set fetch-retry-maxtimeout 120000 && \
+    npm config set legacy-peer-deps true && \
     if [ -f package-lock.json ]; then \
-        npm ci --unsafe-perm --network-timeout 300000; \
+        npm ci --unsafe-perm --network-timeout 300000 --legacy-peer-deps; \
     else \
-        npm install --unsafe-perm --network-timeout 300000; \
+        npm install --unsafe-perm --network-timeout 300000 --legacy-peer-deps; \
     fi
 
 FROM node:18-alpine AS builder
@@ -37,6 +39,7 @@ ENV NEXT_RUNTIME=nodejs
 ENV NODE_OPTIONS="--max_old_space_size=4096"
 ENV NEXT_DISABLE_OPTIMIZATION=1
 ENV SKIP_TYPE_CHECK=1
+ENV NIXPACKS_PATH=/usr/local/bin
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -75,11 +78,11 @@ USER nextjs
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
-ENV PORT=7777
+ENV PORT=3000
 ENV HOST=0.0.0.0
 ENV NEXT_RUNTIME=nodejs
 
-EXPOSE 7777
+EXPOSE 3000
 
 CMD ["node", "server.js"]
 
@@ -111,18 +114,19 @@ RUN npm config set registry https://registry.npmjs.org/ && \
     npm config set fetch-retries 5 && \
     npm config set fetch-retry-mintimeout 20000 && \
     npm config set fetch-retry-maxtimeout 120000 && \
-    npm install
+    npm config set legacy-peer-deps true && \
+    npm install --legacy-peer-deps
 
 COPY . .
 
 ENV TZ=Europe/Warsaw
 ENV NODE_ENV=development
 ENV NEXT_TELEMETRY_DISABLED=1
-ENV PORT=7777
+ENV PORT=3000
 ENV HOST=0.0.0.0
 ENV NEXT_RUNTIME=nodejs
 ENV NODE_OPTIONS="--max_old_space_size=4096"
 
-EXPOSE 7777
+EXPOSE 3000
 
 CMD ["npm", "run", "dev"]
