@@ -1,0 +1,238 @@
+# Reguły kodowania dla projektu Link
+
+# Styl kodu
+- Używaj TypeScript dla wszystkich plików
+- Preferuj funkcje strzałkowe dla komponentów React
+- Używaj interfejsów zamiast typów dla obiektów
+- Unikaj klas, preferuj podejście funkcyjne
+- Używaj absolutnych importów (@/...)
+- Używaj explicit return types dla wszystkich funkcji
+
+# Nazewnictwo
+- PascalCase dla komponentów React (np. VideoCard.tsx)
+- camelCase dla plików utility (np. youtube.ts)
+- camelCase dla zmiennych i funkcji
+- Używaj opisowych nazw zmiennych z czasownikami pomocniczymi (np. isLoading, hasError)
+
+# Struktura komponentów
+- Każdy komponent w osobnym pliku
+- Eksportuj komponenty jako default export
+- Definiuj interfejsy props na początku pliku
+- Używaj destrukturyzacji dla props
+
+# Tailwind CSS
+- Używaj klas Tailwind zamiast inline styles
+- Grupuj klasy według kategorii (layout, spacing, colors, etc.)
+- Używaj zmiennych dla powtarzających się wartości
+
+# TypeScript
+- Używaj strict mode
+- Definiuj typy dla wszystkich zmiennych
+- Unikaj any, preferuj unknown
+- Używaj union types zamiast enum
+
+# Obsługa błędów
+- Używaj try/catch dla operacji asynchronicznych
+- Loguj błędy do konsoli
+- Wyświetlaj przyjazne komunikaty błędów dla użytkownika
+
+# Formatowanie
+- Używaj 2 spacji do wcięć
+- Używaj średników na końcu linii
+- Maksymalna długość linii: 100 znaków
+- Używaj pojedynczych cudzysłowów dla stringów
+
+# Komentarze
+- Używaj JSDoc dla funkcji i komponentów
+- Komentuj skomplikowaną logikę
+- Unikaj zbędnych komentarzy
+
+# Importy
+- Grupuj importy według kategorii (React, komponenty, utils, etc.)
+- Sortuj importy alfabetycznie w każdej kategorii
+
+# Testy
+- Pisz testy dla wszystkich komponentów i funkcji
+- Używaj Jest i React Testing Library
+- Testuj edge cases
+
+# Git
+- Używaj konwencji Conventional Commits
+- Pisz opisowe komunikaty commitów
+- Używaj feature branches
+
+# Docker
+- Używaj multi-stage builds
+- Minimalizuj rozmiar obrazów
+- Używaj named volumes dla danych persystentnych
+
+# Cursor Rules - Zasady i Napotkane Błędy
+
+## 🚫 Błędy do Unikania
+
+### 1. Kodowanie Znaków w PowerShell
+- ❌ Problem: Użycie polskich znaków w stringach PowerShell powoduje błędy wyświetlania
+- ❌ Przykłady błędnych znaków:
+  - ą, ę, ć, ł, ń, ó, ś, ź, ż
+  - cudzysłowy typograficzne (" ")
+  - myślniki em/en (– —)
+  - wielokropek (…)
+- ✅ Rozwiązanie: 
+  - Używać tylko znaków ASCII w stringach
+  - Zamiast polskich znaków używać ich odpowiedników ASCII:
+    - 'a' zamiast 'ą'
+    - 'e' zamiast 'ę'
+    - 'c' zamiast 'ć'
+    - 'l' zamiast 'ł'
+    - 'n' zamiast 'ń'
+    - 'o' zamiast 'ó'
+    - 's' zamiast 'ś'
+    - 'z' zamiast 'ź' lub 'ż'
+  - Używać standardowych cudzysłowów (")
+  - Używać standardowego myślnika (-)
+  - Używać trzech kropek (...)
+  - Dodać na początku skryptu konfigurację UTF-8:
+    ```powershell
+    $PSDefaultParameterValues['*:Encoding'] = 'utf8'
+    [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+    $OutputEncoding = [System.Text.Encoding]::UTF8
+    ```
+
+### 2. Formatowanie Komunikatów PowerShell
+- ❌ Unikać:
+  - Znaków specjalnych w kluczach hash table
+  - Znaków formatujących w stringach bez escape (\n, \t, etc.)
+  - Znaków Unicode w nazwach zmiennych i funkcji
+- ✅ Stosować:
+  - Tylko litery ASCII (a-z, A-Z) w kluczach
+  - Escape sequence dla znaków specjalnych
+  - CamelCase dla nazw bez znaków specjalnych
+
+### 3. Powtarzanie Nieudanych Prób
+- ❌ Problem: Powtarzanie tej samej metody naprawy, która już nie zadziałała
+- ✅ Rozwiązanie:
+  - Jeśli próba naprawy nie powiodła się, szukać innego rozwiązania
+  - Nie powtarzać tej samej metody naprawy
+  - Dokumentować nieudane próby, aby uniknąć ich powtarzania
+  - Szukać alternatywnych podejść do problemu
+  - Analizować przyczynę niepowodzenia przed kolejną próbą
+
+### 4. Przykłady Poprawnego Formatowania
+```powershell
+# ❌ Źle:
+$Messages = @{
+    "Start Działania..." = "Rozpoczynam zadanie"
+    "Błąd" = "Wystąpił błąd"
+}
+
+# ✅ Dobrze:
+$Messages = @{
+    StartAction = "Rozpoczynam zadanie"
+    Error = "Wystapil blad"
+}
+
+# ❌ Źle:
+Write-Host "Operacja zakończona ✓"
+
+# ✅ Dobrze:
+Write-Host "Operacja zakonczona [OK]"
+```
+
+### 5. Duplikaty Kluczy w Hash Tables
+- ❌ Problem: Użycie tego samego klucza wielokrotnie w hash table PowerShell
+- ✅ Rozwiązanie:
+  - Sprawdzać unikalne nazwy kluczy
+  - Używać opisowych nazw unikających konfliktów (np. ProcessError -> ProcessCheckError, ProcessStopError)
+
+### 6. Uprawnienia Skryptów
+- ❌ Problem: Uruchamianie skryptów bez sprawdzenia uprawnień
+- ✅ Rozwiązanie:
+  - Zawsze dodawać sprawdzenie uprawnień administratora
+  - Informować użytkownika o wymaganych uprawnieniach
+  - Używać Test-AdminRights przed wykonaniem operacji wymagających podwyższonych uprawnień
+
+### 7. Kodowanie Plików w Node.js na Windows
+- ❌ Problem: Niepoprawne kodowanie plików powoduje błędy typu "Unexpected ''"
+- ✅ Rozwiązanie:
+  - Używać edytora z wykrywaniem kodowania (VS Code, Cursor)
+  - Zapisywać wszystkie pliki w UTF-8 bez BOM
+  - Dodać do package.json:
+    ```json
+    {
+      "scripts": {
+        "prestart": "chcp 65001"
+      }
+    }
+    ```
+  - W skryptach Node.js dodać:
+    ```javascript
+    process.stdin.setEncoding('utf8');
+    process.stdout.setEncoding('utf8');
+    ```
+  - Sprawdzać kodowanie plików przed uruchomieniem:
+    ```powershell
+    Get-Content -Path .\plik.js -Encoding UTF8
+    ```
+
+## 📝 Zasady Ogólne
+
+### PowerShell
+1. Zawsze używać obsługi błędów (try-catch)
+2. Dodawać komentarze do funkcji i złożonej logiki
+3. Używać znaczących nazw zmiennych i funkcji
+4. Stosować jednolity styl formatowania
+5. Testować skrypty przed commitowaniem
+
+### TypeScript/JavaScript
+1. Używać TypeScript dla wszystkich nowych plików
+2. Definiować typy dla wszystkich zmiennych
+3. Używać interfejsów zamiast typów dla obiektów
+4. Stosować ESLint i Prettier
+
+### React
+1. Używać funkcyjnych komponentów
+2. Implementować lazy loading dla dużych komponentów
+3. Optymalizować re-rendery
+4. Unikać nadmiernego zagnieżdżania komponentów
+
+### Git
+1. Używać znaczących nazw commitów
+2. Tworzyć osobne branche dla nowych funkcjonalności
+3. Regularnie synchronizować z głównym branchem
+4. Code review przed mergem
+
+## 🔄 Proces Rozwoju
+1. Zawsze testować zmiany lokalnie przed commitem
+2. Dokumentować napotkane problemy i rozwiązania
+3. Aktualizować Memory Bank po każdej większej zmianie
+4. Przestrzegać kolejności zadań z tasks.md 
+
+# Baza Danych (MariaDB 10)
+- Używaj typów zgodnych z MariaDB 10:
+  - varchar(128) dla ID (UUID)
+  - varchar z określoną długością dla krótkich tekstów
+  - text dla długich tekstów
+  - timestamp dla dat
+  - enum dla statusów
+  - int dla liczb całkowitych
+  - boolean dla wartości logicznych
+- Używaj InnoDB jako silnika bazy danych
+- Stosuj kodowanie UTF8MB4 i collation utf8mb4_unicode_ci
+- Definiuj klucze obce dla relacji między tabelami
+- Używaj indeksów dla często wyszukiwanych kolumn
+- Dodawaj DEFAULT CURRENT_TIMESTAMP dla created_at
+- Dodawaj ON UPDATE CURRENT_TIMESTAMP dla updated_at
+- Unikaj przechowywania dużych BLOBów w bazie
+- Waliduj dane przed zapisem do bazy
+- Używaj transakcji dla operacji wielotabelowych
+
+# Drizzle ORM
+- Definiuj schematy w osobnych plikach
+- Używaj typów z mysql-core zamiast pg-core
+- Stosuj konwencję nazewniczą snake_case dla kolumn
+- Definiuj relacje między tabelami
+- Używaj migracji dla zmian w schemacie
+- Testuj zapytania przed wdrożeniem 
+- Nie mieszaj mysql-core i pg-core w tym samym pliku
+- Definiuj jeden schemat tabeli na plik dla ułatwienia migracji
+- Używaj index.ts do eksportu wszystkich schematów 

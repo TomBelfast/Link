@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: link-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - ngnix_my_bridge
+
+  nextjs-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - NODE_ENV=production
+    container_name: link-app
+    restart: unless-stopped
+    ports:
+      - "9999:9999"
+    environment:
+      - NODE_ENV=production
+      - PORT=9999
+      - NEXT_TELEMETRY_DISABLED=1
+      - NEXT_RUNTIME=nodejs
+      - NODE_OPTIONS=--max_old_space_size=4096
+      - NEXT_DISABLE_OPTIMIZATION=1
+      - SKIP_TYPE_CHECK=1
+      - HOST=0.0.0.0
+      - REDIS_URL=redis://redis:6379
+    volumes:
+      - ./public/uploads:/app/public/uploads
+      - ./.next/cache:/app/.next/cache
+      - ./logs:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9999/api/health"]
+      interval: 60s
+      timeout: 30s
+      retries: 3
+      start_period: 30s
+    depends_on:
+      - redis
+    networks:
+      - ngnix_my_bridge
+
+volumes:
+  redis_data:
+    driver: local
+  nextjs-data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${UPLOAD_DIR:-/share/Container/link/public/uploads}
+      o: bind
+
+networks:
+  ngnix_my_bridge:
+    external: true
