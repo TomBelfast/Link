@@ -4,8 +4,7 @@ services:
   link-app:
     build:
       context: .
-      dockerfile: Dockerfile
-      target: runner
+      dockerfile: Dockerfile.simple
     container_name: link-app
     restart: unless-stopped
     ports:
