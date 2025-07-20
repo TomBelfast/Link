@@ -48,16 +48,31 @@ PROJECT_RESPONSE=$(curl -s -X POST \
 
 echo "Odpowiedź tworzenia projektu: $PROJECT_RESPONSE"
 
-# 4. Utwórz aplikację Docker Compose
+# Wyciągnij UUID projektu
+PROJECT_UUID=$(echo $PROJECT_RESPONSE | grep -o '"uuid":"[^"]*"' | cut -d'"' -f4)
+echo "UUID projektu: $PROJECT_UUID"
+
+# 4. Pobierz listę serwerów
 echo ""
-echo "4. Tworzenie aplikacji Docker Compose..."
+echo "4. Pobieranie listy serwerów..."
+SERVERS_RESPONSE=$(curl -s -H "Authorization: Bearer $API_TOKEN" "$COOLIFY_URL/api/v1/servers")
+echo "Serwery: $SERVERS_RESPONSE"
+
+# Wyciągnij UUID serwera (pierwszego dostępnego)
+SERVER_UUID=$(echo $SERVERS_RESPONSE | grep -o '"uuid":"[^"]*"' | head -1 | cut -d'"' -f4)
+echo "UUID serwera: $SERVER_UUID"
+
+# 5. Utwórz aplikację Docker Compose
+echo ""
+echo "5. Tworzenie aplikacji Docker Compose..."
 APP_DATA='{
     "name": "'$APP_NAME'",
-    "repository": "'$GITHUB_REPO'",
-    "branch": "master",
-    "dockerComposeFile": "'$DOCKER_COMPOSE_FILE'",
-    "port": 3000,
-    "type": "dockercompose"
+    "project_uuid": "'$PROJECT_UUID'",
+    "server_uuid": "'$SERVER_UUID'",
+    "git_repository": "TomBelfast/Link",
+    "git_branch": "master",
+    "docker_compose_location": "'$DOCKER_COMPOSE_FILE'",
+    "build_pack": "dockercompose"
 }'
 
 APP_RESPONSE=$(curl -s -X POST \
@@ -68,9 +83,9 @@ APP_RESPONSE=$(curl -s -X POST \
 
 echo "Odpowiedź tworzenia aplikacji: $APP_RESPONSE"
 
-# 5. Sprawdź status aplikacji
+# 6. Sprawdź status aplikacji
 echo ""
-echo "5. Sprawdzanie statusu aplikacji..."
+echo "6. Sprawdzanie statusu aplikacji..."
 sleep 5
 
 APPS_RESPONSE=$(curl -s -H "Authorization: Bearer $API_TOKEN" "$COOLIFY_URL/api/v1/applications")
