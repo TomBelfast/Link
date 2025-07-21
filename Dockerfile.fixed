@@ -1,0 +1,86 @@
+FROM node:18-alpine AS deps
+
+WORKDIR /app
+
+# Instalacja zależności systemowych
+RUN apk add --no-cache libc6-compat python3 make g++ git
+
+# Konfiguracja npm przed kopiowaniem plików
+RUN npm config set registry https://registry.npmjs.org/ && \
+    npm config set fetch-retries 3 && \
+    npm config set fetch-retry-mintimeout 10000 && \
+    npm config set fetch-retry-maxtimeout 60000 && \
+    npm config set legacy-peer-deps true && \
+    npm config set cache /tmp/.npm && \
+    npm config set prefer-offline true
+
+# Kopiuj tylko package.json i package-lock.json
+COPY package*.json ./
+
+# Instalacja zależności z timeoutem i retry
+RUN npm ci --legacy-peer-deps --no-audit --no-fund --prefer-offline --cache /tmp/.npm || \
+    (rm -rf node_modules package-lock.json && npm install --legacy-peer-deps --no-audit --no-fund)
+
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+# Instalacja git dla build process
+RUN apk add --no-cache git
+
+# Konfiguracja środowiska
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=production
+ENV NEXT_RUNTIME=nodejs
+ENV NODE_OPTIONS="--max_old_space_size=4096"
+
+# Kopiuj node_modules z poprzedniego stage
+COPY --from=deps /app/node_modules ./node_modules
+
+# Kopiuj wszystkie pliki źródłowe
+COPY . .
+
+# Build aplikacji
+RUN npm run build
+
+FROM node:18-alpine AS runner
+
+WORKDIR /app
+
+# Instalacja zależności systemowych
+RUN apk add --no-cache \
+    tzdata \
+    curl \
+    ca-certificates \
+    bash
+
+# Ustawienie strefy czasowej
+ENV TZ=Europe/Warsaw
+
+# Kopiuj pliki z poprzedniego stage
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/package.json ./
+
+# Utworzenie użytkownika i katalogów
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nextjs -u 1001 -G nodejs && \
+    mkdir -p /app/.next/cache /app/public/uploads && \
+    chown -R nextjs:nodejs /app && \
+    chmod -R 755 /app/public/uploads
+
+# Przełączenie na użytkownika nextjs
+USER nextjs
+
+# Konfiguracja środowiska
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3000
+ENV HOST=0.0.0.0
+
+# Ekspozycja portu
+EXPOSE 3000
+
+# Komenda startowa
+CMD ["node", "server.js"] 

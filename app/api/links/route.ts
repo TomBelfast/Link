@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/db';
+import { db } from '@/db/index';
 import { links } from '@/db/schema';
 import { desc, eq, or } from 'drizzle-orm';
 import { handleApiError, validateRequired } from '../error-handler';

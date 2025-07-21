@@ -5,24 +5,8 @@ import { Link as LinkType } from '@/db/schema';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 
-// Dynamicznie importujemy komponenty z headlessui
-const DialogRoot = dynamic(
-  () => import('@headlessui/react').then(mod => mod.Dialog),
-  {
-    ssr: false,
-    loading: () => <div className="animate-pulse bg-gray-700 h-64 rounded-lg"></div>
-  }
-);
-
-const DialogPanel = dynamic(
-  () => import('@headlessui/react').then(mod => mod.Dialog.Panel),
-  { ssr: false }
-);
-
-const DialogTitle = dynamic(
-  () => import('@headlessui/react').then(mod => mod.Dialog.Title),
-  { ssr: false }
-);
+// Import headlessui components
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 
 // Rozszerzamy typ LinkType o opcjonalny timestamp
 type LinkWithTimestamp = LinkType & { _timestamp?: number };
@@ -365,7 +349,7 @@ export default function Links() {
             ))}
           </div>
 
-          <DialogRoot
+          <Dialog
             open={isEditModalOpen}
             onClose={handleCloseModal}
             className="relative z-50"
@@ -431,7 +415,7 @@ export default function Links() {
                 )}
               </DialogPanel>
             </div>
-          </DialogRoot>
+          </Dialog>
 
           {toast && (
             <div 

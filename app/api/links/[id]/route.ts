@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/db';
+import { db } from '@/db/index';
 import { links } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { UpdateLinkData, LinkResponse, ErrorResponse } from '@/types/api';
@@ -13,9 +13,9 @@ const validateId = (id: string): number | null => {
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse<LinkResponse | ErrorResponse>> {
-  const resolvedId = await Promise.resolve(params.id);
+  const { id: resolvedId } = await params;
   
   const id = validateId(resolvedId);
   if (id === null) {
@@ -44,9 +44,9 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse<LinkResponse | ErrorResponse>> {
-  const resolvedId = await Promise.resolve(params.id);
+  const { id: resolvedId } = await params;
   
   const id = validateId(resolvedId);
   if (id === null) {
@@ -132,9 +132,9 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse<LinkResponse | ErrorResponse>> {
-  const resolvedId = await Promise.resolve(params.id);
+  const { id: resolvedId } = await params;
   
   const id = validateId(resolvedId);
   if (id === null) {

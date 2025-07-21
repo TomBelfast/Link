@@ -40,10 +40,6 @@ const nextConfig = {
     styledComponents: true,
     removeConsole: process.env.NODE_ENV === 'production',
     reactRemoveProperties: process.env.NODE_ENV === 'production',
-    relay: {
-      src: './',
-      artifactDirectory: './__generated__',
-    },
   },
   typescript: {
     ignoreBuildErrors: false,
