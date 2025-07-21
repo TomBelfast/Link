@@ -12,8 +12,7 @@ const nextConfig = {
     workerThreads: true,
     cpus: 4,
     optimizeCss: true,
-    scrollRestoration: true,
-    instrumentationHook: true
+    scrollRestoration: true
   },
   images: {
     domains: ['localhost', 'pollywood.zapto.org', 'i.ytimg.com'],
@@ -128,7 +127,6 @@ const nextConfig = {
       transform: 'react-icons/{{name}}/{{member}}',
     },
   },
-  swcMinify: true,
   output: 'standalone',
   productionBrowserSourceMaps: false,
   generateEtags: true,
