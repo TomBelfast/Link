@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { db } from '@/db/index';
 import { links } from '@/db/schema';
 import { eq } from 'drizzle-orm';
-import { UpdateLinkData, LinkResponse, ErrorResponse } from '@/types/api';
+import { Link } from '@/db/schema';
 import CacheManager from '@/lib/redis';
 
 // Funkcja pomocnicza do walidacji ID
@@ -14,7 +14,7 @@ const validateId = (id: string): number | null => {
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
-): Promise<NextResponse<LinkResponse | ErrorResponse>> {
+): Promise<NextResponse> {
   const { id: resolvedId } = await params;
   
   const id = validateId(resolvedId);
@@ -45,7 +45,7 @@ export async function GET(
 export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
-): Promise<NextResponse<LinkResponse | ErrorResponse>> {
+): Promise<NextResponse> {
   const { id: resolvedId } = await params;
   
   const id = validateId(resolvedId);
@@ -133,7 +133,7 @@ export async function PUT(
 export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
-): Promise<NextResponse<LinkResponse | ErrorResponse>> {
+): Promise<NextResponse> {
   const { id: resolvedId } = await params;
   
   const id = validateId(resolvedId);

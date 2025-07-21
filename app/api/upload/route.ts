@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import sharp from 'sharp';
+// Dynamic import sharp to avoid build issues
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 const MAX_IMAGE_DIMENSION = 3840; // 4K resolution
@@ -8,6 +8,8 @@ const COMPRESSION_QUALITY = 85;
 
 export async function POST(request: Request) {
   try {
+    const sharp = (await import('sharp')).default;
+    
     const formData = await request.formData();
     const file = formData.get('file') as File;
     

@@ -5,7 +5,10 @@
       "Bash(find:*)",
       "Bash(mv:*)",
       "Bash(cp:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm install:*)",
+      "Bash(git add:*)"
     ],
     "deny": []
   }
