@@ -5,7 +5,7 @@ import Header from '@/components/Header'
 import { ThemeProvider } from '@/contexts/ThemeContext'
 import { Toaster } from 'react-hot-toast';
 import { globalStyles } from '@/styles/common';
-import { AuthProvider } from './providers/auth-provider';
+import { AuthProvider } from './providers/auth-provider.tsx';
 
 const inter = Inter({ subsets: ['latin'] })
 
