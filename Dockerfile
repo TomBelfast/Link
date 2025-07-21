@@ -14,7 +14,7 @@ RUN \
     npm config set fetch-retry-mintimeout 20000 && \
     npm config set fetch-retry-maxtimeout 120000 && \
     npm config set legacy-peer-deps true && \
-    npm install --unsafe-perm --network-timeout 300000 --legacy-peer-deps
+    npm install --unsafe-perm --legacy-peer-deps
 
 FROM node:18-alpine AS builder
 
