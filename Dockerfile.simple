@@ -42,11 +42,11 @@ USER nextjs
 # Zmienne środowiskowe
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
-ENV PORT=3000
+ENV PORT=3211
 ENV HOST=0.0.0.0
 ENV TZ=Europe/Warsaw
 
-EXPOSE 3000
+EXPOSE 3211
 
 # Uruchomienie aplikacji
 CMD ["npm", "start"] 
