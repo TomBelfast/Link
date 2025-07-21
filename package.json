@@ -7,7 +7,6 @@
     "dev": "next dev -p 3000 -H 0.0.0.0",
     "build": "cross-env NODE_OPTIONS=--max_old_space_size=4096 next build",
     "start": "next start -p 3000 -H 0.0.0.0",
-    "install": "npm install --legacy-peer-deps",
     "lint": "next lint",
     "test": "vitest",
     "db:generate": "drizzle-kit generate:mysql",
